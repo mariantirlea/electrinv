@@ -1,31 +1,35 @@
 package ro.mariantirlea.electrinv;
 
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 
-public class MainActivity extends AppCompatActivity {
+import ro.mariantirlea.electrinv.db.AppDatabase;
+import ro.mariantirlea.electrinv.db.Location;
+import ro.mariantirlea.electrinv.db.Item;
+
+public class HomeActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_home);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
+        AppDatabase database = AppDatabase.getDatabase(getApplicationContext());
+
+        database.itemDao().removeAllItems();
+
+        Location loc1 = new Location(1, "S1", "-");
+        Location loc2 = new Location(2, "S2", "-");
+        database.locationDao().addLocation(loc1);
+        database.locationDao().addLocation(loc2);
+
+        Item itm1 = new Item(loc1.id, "Itm1", "-");
+        database.itemDao().addItem(itm1);
     }
 
     @Override
