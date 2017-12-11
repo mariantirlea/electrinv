@@ -13,6 +13,7 @@ public class SplashActivity extends Activity {
 
     private TextView tv;
     private ImageView iv;
+    private Thread startThread = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,18 +29,35 @@ public class SplashActivity extends Activity {
 
         final Intent mainIntent = new Intent(this, MainActivity.class);
 
-        new Thread(new Runnable() {
+        startThread = new Thread(new Runnable() {
             @Override
             public void run() {
                 try {
                     Thread.sleep(TIMEOUT);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }finally {
                     startActivity(mainIntent);
                     finish();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
                 }
             }
-        }).start();
+        });
+
+        startThread.start();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        startThread.interrupt();
     }
 }
